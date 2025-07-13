@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Взлом Контроля</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    h1 {
+      text-shadow: 0 0 5px #0f0;
+    }
+
+    #game {
+      margin-top: 30px;
+    }
+
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      background-color: #111;
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 20px 30px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
+    #reset {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 18px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>СИСТЕМА ВЗЛОМА</h1>
+  <div id="game">
+    <div id="instruction">Уровень 1: Найди кнопку доступа</div>
+    <div class="button-grid" id="buttons"></div>
+    <div id="status"></div>
+    <button id="reset" onclick="startGame()">Начать заново</button>
+  </div>
+
+  <script>
+    let level = 1;
+    let maxLevel = 3;
+    let correctButton = 0;
+    let fails = 0;
+    let maxFails = 3;
+
+    const buttonsDiv = document.getElementById("buttons");
+    const instruction = document.getElementById("instruction");
+    const status = document.getElementById("status");
+    const resetBtn = document.getElementById("reset");
+
+    function startGame() {
+      level = 1;
+      fails = 0;
+      status.innerText = "";
+      resetBtn.style.display = "none";
+      nextLevel();
+    }
+
+    function nextLevel() {
+      buttonsDiv.innerHTML = "";
+      instruction.innerText = `Уровень ${level}: Найди кнопку доступа`;
+      const buttonCount = 3 + level * 2; // Уровень 1: 5, 2: 7, 3: 9 кнопок
+      correctButton = Math.floor(Math.random() * buttonCount);
+
+      for (let i = 0; i < buttonCount; i++) {
+        const btn = document.createElement("button");
+        btn.classList.add("btn");
+        btn.innerText = "КНОПКА " + (i + 1);
+        btn.onclick = () => handleClick(i);
+        buttonsDiv.appendChild(btn);
+      }
+    }
+
+    function handleClick(index) {
+      if (index === correctButton) {
+        if (level >= maxLevel) {
+          status.innerText = "✅ ДОСТУП ПОЛУЧЕН. ВЗЛОМ ЗАВЕРШЕН.";
+          buttonsDiv.innerHTML = "";
+          instruction.innerText = "СИСТЕМА ПОД КОНТРОЛЕМ.";
+          resetBtn.style.display = "inline-block";
+        } else {
+          level++;
+          nextLevel();
+        }
+      } else {
+        fails++;
+        if (fails >= maxFails) {
+          status.innerText = "❌ ДОСТУП ЗАБЛОКИРОВАН. СИСТЕМА ОПОВЕЩЕНА.";
+          buttonsDiv.innerHTML = "";
+          instruction.innerText = "ВЗЛОМ НЕУДАЧЕН.";
+          resetBtn.style.display = "inline-block";
+        } else {
+          status.innerText = `❗ Неверно. Ошибок: ${fails} из ${maxFails}`;
+        }
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
+
